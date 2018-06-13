@@ -42,7 +42,7 @@ class CustomAdapter(LogicAdapter):
         ])
 
         response = Statement(random_text)
-        response.confidence = 1
+        response.confidence = 0
         return response
 
     def sanitize(self, text):
@@ -51,11 +51,3 @@ class CustomAdapter(LogicAdapter):
     def match(self, text, word):
         import re
         return word in re.split(' |-', text)
-
-
-        #points = {}
-        # for intent, data in intents.items():
-        #     for word in data.get('required'):
-        #         if match(stm, word):
-        #            points.update({intent, points.get(intent, default=0) + 1}) 
-
