@@ -11,6 +11,8 @@ delphos = ChatBot(
     database='./db.sqlite3'
     )
 
+delphos.get_response('teste')
+
 # def treinar(entrada): 
 #     if isinstance(entrada, dict):
 #         for lista in entrada.values():

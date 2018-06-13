@@ -1,41 +1,76 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="/static/style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="static/style.css">
   </head>
   <body>
-    <h1>Delphos</h1>
-    <div>
-      <div id="chatbox">
-        <p class="botText"><span>Oi, o que quer saber ?</span></p>
+    <div class="container-fluid" width="50%">
+      <div class="row">
+        <div class="col-12 title-wrapper">
+          <img src="static/bot.png" class="rounded float-left" width="50px" alt="">
+          <h1>Delphos</h1>
+        </div>
       </div>
-      <div id="userInput">
-        <input id="textInput" type="text" name="msg" placeholder="Mensagem">
-        <input id="buttonInput" type="submit" value="Enviar">
+
+      <div class="row">
+        <div class="col-12">
+          <div id="chat-wrapper" class="rounded">
+              <p class="chat-text response-text rounded">Olá, como posso te ajudar ?</p>
+          </div>
+        </div>
       </div>
-      <script>
-        function getBotResponse() {
-          var rawText = $("#textInput").val();
-          var userHtml = '<p class="userText"><span>' + rawText + '</span></p>';
-          $("#textInput").val("");
-          $("#chatbox").append(userHtml);
-          document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
-          $.get("/get", { msg: rawText }).done(function(data) {
-            var botHtml = '<p class="botText"><span>' + data + '</span></p>';
-            $("#chatbox").append(botHtml);
-            document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
-          });
-        }
-        $("#textInput").keypress(function(e) {
-            if(e.which == 13) {
-                getBotResponse();
-            }
-        });
-        $("#buttonInput").click(function() {
-          getBotResponse();
-        })
-      </script>
+
+      <div class="row">
+        <div class="col-12 input-wrapper">
+            <div class="input-group mb-3">
+              <input id="msg" type="text" class="form-control" placeholder="Mensagem" aria-label="Recipient's username" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button id="enviar" class="btn btn-outline-secondary" type="button">Enviar</button>
+              </div>
+            </div>
+
+        </div>
+      </div>
     </div>
+
+    <!-- Scripts -->
+  <script src="https://unpkg.com/jquery@3.3.1/dist/jquery.js"></script>
+  <script type="text/javascript">
+
+    var chatbox = $('#chat-wrapper');
+    var btn = $('#enviar');
+    var entrada = $('#msg');
+
+    btn.on('click', function() {
+      var text = entrada.val();
+      if (text.length > 0) {
+        append_request(text);
+        append_response(text);
+        entrada.val('')
+      } 
+    });
+
+    entrada.keypress(function(e) {
+      if(e.which == 13) {
+          btn.trigger('click');
+      }
+    });
+
+    function append_request(text) {
+      var html = `<p class="chat-text request-text">${text}</p>`;
+      chatbox.append(html)
+      chatbox.animate({ scrollTop: chatbox.prop("scrollHeight")}, 1000);
+    }
+
+    function append_response(text) {
+      $.get("/get", { msg: text }).done(function(data) {
+        var html = `<p class="chat-text response-text">${data}</p>`;
+        chatbox.append(html);
+        chatbox.animate({ scrollTop: chatbox.prop("scrollHeight")}, 1000);
+      });
+    }
+
+  </script>
   </body>
 </html>

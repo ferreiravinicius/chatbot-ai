@@ -1,25 +1,8 @@
 from chatterbot.logic import LogicAdapter
 from chatterbot.conversation import Statement
 from unidecode import unidecode
+from training import intents
 import secrets
-
-intents = {
-    'primeira_lei_newton' : {
-        'required': ['primeira', 'lei', 'newton'],
-        'optional': [],
-        'answer': "teste_newton_1"
-    },
-    'segunda_lei_newton' : {
-        'required': ['segunda', 'lei', 'newton'],
-        'optional': [],
-        'answer': "teste_newton_2"
-    },
-    'segunda_lei_kepler' : {
-        'required': ['segunda', 'lei', 'kepler'],
-        'optional': [],
-        'answer': "teste_kepler_2"
-    },
-}
 
 class CustomAdapter(LogicAdapter):
     def __init__(self, **kwargs):
@@ -32,7 +15,13 @@ class CustomAdapter(LogicAdapter):
         text = self.sanitize(statement.text)
 
         for intent, data in intents.items():
-            if all(self.match(text, word) for word in data.get('required')):
+            required = data.get('required')
+            if len(required) > 0 and all(self.match(text, word) for word in required):
+                return Statement(data.get('answer'))
+
+        for intent, data in intents.items():
+            triggers = data.get('trigger') or []
+            if len(triggers) > 0 and any(self.match(text, word) for word in triggers):
                 return Statement(data.get('answer'))
 
         random_text = secrets.choice([
