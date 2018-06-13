@@ -13,4 +13,4 @@ def get_bot_response():
     return str(delphos.get_response(text))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=False)
